@@ -1,83 +1,99 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GLITCH REALM - Rockstar Aesthetic</title>
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOCTURNO</title>
+<meta name="description" content="Nocturno — archivo visual.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- AUDIO DE FONDO -->
-    <audio id="backgroundMusic" loop volume="0.3">
-        <source src="assets/music/background.mp3" type="audio/mpeg">
-    </audio>
 
-    <!-- CONTENEDOR PRINCIPAL -->
-    <div class="container">
-        <!-- HEADER CON GLITCH -->
-        <header class="glitch-header">
-            <div class="glitch-text" data-text="GLITCH REALM">GLITCH REALM</div>
-            <p class="subtitle-glitch">Experiencia de Audio Visual</p>
-        </header>
+<!-- GRANO DE PELÍCULA — TEXTURA GLOBAL -->
+<div class="grain" aria-hidden="true"></div>
 
-        <!-- CONTROLES DE MÚSICA -->
-        <div class="music-controls">
-            <button id="playBtn" class="btn-rockstar active">▶ REPRODUCIR</button>
-            <button id="pauseBtn" class="btn-rockstar">⏸ PAUSA</button>
-            <div class="volume-control">
-                <label for="volumeSlider">VOLUMEN:</label>
-                <input type="range" id="volumeSlider" min="0" max="100" value="30">
-            </div>
-        </div>
+<!-- CURSOR PERSONALIZADO (solo activo sobre la galería) -->
+<div class="cursor-label" id="cursorLabel">VER</div>
 
-        <!-- CONTENEDOR DE SEGMENTOS -->
-        <main class="segments-container" id="segmentsContainer">
-            <!-- Los segmentos se agregarán aquí dinámicamente -->
-        </main>
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a href="#top" class="nav__mark">N.</a>
+  <div class="nav__links">
+    <a href="#galeria">Galería</a>
+    <a href="#sobre">Sobre</a>
+    <a href="#contacto">Contacto</a>
+  </div>
+</nav>
 
-        <!-- BOTÓN PARA AGREGAR SEGMENTOS -->
-        <div class="add-segment-section">
-            <button id="addSegmentBtn" class="btn-rockstar btn-large">+ AGREGAR SEGMENTO</button>
-        </div>
+<!-- HERO -->
+<header class="hero" id="top">
+  <p class="hero__eyebrow">ARCHIVO VISUAL — VOL. 01</p>
+  <h1 class="hero__mark" data-text="Nocturno">Nocturno</h1>
+  <p class="hero__tagline">Imágenes después de medianoche.</p>
+  <a href="#galeria" class="hero__scroll" aria-label="Ir a la galería">
+    <span class="hero__scroll-line"></span>
+    DESCENDER
+  </a>
+</header>
 
-        <!-- MODAL PARA AGREGAR SEGMENTO -->
-        <div id="segmentModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>CREAR NUEVO SEGMENTO</h2>
-                
-                <div class="form-group">
-                    <label for="segmentTitle">Título del Segmento:</label>
-                    <input type="text" id="segmentTitle" placeholder="Ej: Falla Digital" class="input-rockstar">
-                </div>
+<main>
 
-                <div class="form-group">
-                    <label for="segmentImage">Imagen (Nombra así: segment_001.png):</label>
-                    <input type="file" id="segmentImage" accept="image/*" class="input-rockstar">
-                    <small>📌 Nombres: segment_001.png, segment_002.png, segment_003.png...</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="segmentSound">Sonido de Efecto (Nombra así: glitch_001.mp3):</label>
-                    <input type="file" id="segmentSound" accept="audio/*" class="input-rockstar">
-                    <small>📌 Nombres: glitch_001.mp3, glitch_002.mp3, glitch_003.mp3...</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="glitchType">Tipo de Glitch:</label>
-                    <select id="glitchType" class="input-rockstar">
-                        <option value="glitch-1">Distorsión Roja</option>
-                        <option value="glitch-2">Scan Lines</option>
-                        <option value="glitch-3">Dispersión Caótica</option>
-                        <option value="glitch-4">Deformación Digital</option>
-                    </select>
-                </div>
-
-                <button id="createSegmentBtn" class="btn-rockstar btn-large">CREAR SEGMENTO</button>
-            </div>
-        </div>
+  <!-- GALERÍA -->
+  <section class="boveda" id="galeria">
+    <div class="boveda__head reveal">
+      <div>
+        <p class="section-eyebrow">SELECCIÓN</p>
+        <h2 class="section-title">Galería</h2>
+      </div>
+      <p class="boveda__count"><span id="segmentCount">0</span> PIEZAS</p>
     </div>
 
-    <script src="script.js"></script>
+    <div class="boveda__grid" id="segmentsContainer">
+      <!-- Se genera desde script.js a partir del arreglo GALLERY -->
+    </div>
+
+    <p class="boveda__empty" id="emptyState">
+      Todavía no hay imágenes.<br>
+      Sigue las instrucciones del README para añadir las tuyas.
+    </p>
+  </section>
+
+  <!-- SOBRE -->
+  <section class="sobre reveal" id="sobre">
+    <p class="section-eyebrow">NOTA</p>
+    <p class="sobre__text">
+      Este archivo se actualiza en privado. Cada imagen es un fragmento
+      de algo más grande que todavía no tiene nombre.
+    </p>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer" id="contacto">
+  <div class="footer__mark">NOCTURNO</div>
+  <div class="footer__links">
+    <a href="#">Instagram</a>
+    <a href="#">Spotify</a>
+    <a href="#">Correo</a>
+  </div>
+  <p class="footer__legal">© <span id="year"></span> Nocturno.</p>
+</footer>
+
+<!-- LIGHTBOX — vista ampliada -->
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <button class="lightbox__close" id="lightboxClose" aria-label="Cerrar">×</button>
+  <button class="lightbox__nav lightbox__prev" id="lightboxPrev" aria-label="Anterior">‹</button>
+  <button class="lightbox__nav lightbox__next" id="lightboxNext" aria-label="Siguiente">›</button>
+  <figure class="lightbox__figure">
+    <img id="lightboxImage" src="" alt="">
+    <figcaption id="lightboxCaption"></figcaption>
+  </figure>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>

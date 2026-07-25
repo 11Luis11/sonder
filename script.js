@@ -1,244 +1,187 @@
-// ============================================
-// GLITCH REALM - ROCKSTAR AESTHETIC
-// Script principal
-// ============================================
+// ==========================================================
+// NOCTURNO — script principal
+// ==========================================================
+//
+// CÓMO AÑADIR TUS IMÁGENES (lee esto primero)
+// ----------------------------------------------------------
+// 1. Guarda tus fotos dentro de la carpeta:  assets/images/
+// 2. Nómbralas así, en orden:
+//        01.jpg
+//        02.jpg
+//        03.jpg
+//        ...
+//    (jpg, png o webp — todas funcionan igual)
+// 3. Agrega o edita una línea aquí abajo en GALLERY por cada
+//    imagen, con el mismo nombre de archivo y el título que
+//    quieras que aparezca:
+//
+//        { file: "04.jpg", title: "Fragmento IV" },
+//
+// 4. Guarda el archivo y recarga la página. Eso es todo —
+//    no hay que subir nada desde el navegador.
+//
+// El campo "textura" es opcional (grano | scan | distortion | onda).
+// Si lo omites, se usa "grano" por defecto.
+// ==========================================================
 
-let segments = JSON.parse(localStorage.getItem('segments')) || [];
-const backgroundMusic = document.getElementById('backgroundMusic');
-const playBtn = document.getElementById('playBtn');
-const pauseBtn = document.getElementById('pauseBtn');
-const volumeSlider = document.getElementById('volumeSlider');
-const addSegmentBtn = document.getElementById('addSegmentBtn');
-const segmentModal = document.getElementById('segmentModal');
-const closeBtn = document.querySelector('.close');
-const createSegmentBtn = document.getElementById('createSegmentBtn');
+const GALLERY = [
+  { file: "01.jpg", title: "Fragmento I",   textura: "grano" },
+  { file: "02.jpg", title: "Fragmento II",  textura: "scan" },
+  { file: "03.jpg", title: "Fragmento III", textura: "distortion" },
+  { file: "04.jpg", title: "Fragmento IV",  textura: "onda" },
+];
+
+const IMAGES_PATH = "assets/images/";
+
 const segmentsContainer = document.getElementById('segmentsContainer');
+const emptyState        = document.getElementById('emptyState');
+const segmentCount      = document.getElementById('segmentCount');
 
-// ============================================
-// CONTROLES DE MÚSICA
-// ============================================
+// ----------------------------------------------------------
+// RENDER DE LA GALERÍA
+// ----------------------------------------------------------
 
-playBtn.addEventListener('click', () => {
-    backgroundMusic.play();
-    playBtn.classList.add('active');
-    pauseBtn.classList.remove('active');
-    playGlitchSound();
-});
+function renderGallery() {
+  segmentsContainer.innerHTML = '';
+  segmentCount.textContent = GALLERY.length;
+  emptyState.style.display = GALLERY.length ? 'none' : 'block';
 
-pauseBtn.addEventListener('click', () => {
-    backgroundMusic.pause();
-    pauseBtn.classList.add('active');
-    playBtn.classList.remove('active');
-});
+  GALLERY.forEach((item, index) => {
+    const num = String(index + 1).padStart(3, '0');
+    const textureClass = `tex-${item.textura || 'grano'}`;
 
-volumeSlider.addEventListener('input', (e) => {
-    backgroundMusic.volume = e.target.value / 100;
-});
+    const el = document.createElement('article');
+    el.className = `segment ${textureClass} reveal`;
+    el.style.transitionDelay = `${Math.min(index * 60, 300)}ms`;
 
-// ============================================
-// MODAL DE AGREGAR SEGMENTO
-// ============================================
+    el.innerHTML = `
+      <span class="segment__num">N&deg; ${num}</span>
+      <div class="segment__image-wrap">
+        <img class="segment__image" src="${IMAGES_PATH}${item.file}" alt="${item.title}" loading="lazy">
+      </div>
+      <div class="segment__body">
+        <span class="segment__title">${item.title}</span>
+      </div>
+    `;
 
-addSegmentBtn.addEventListener('click', () => {
-    segmentModal.style.display = 'block';
-    playGlitchSound();
-});
+    el.addEventListener('click', () => openLightbox(index));
+    el.addEventListener('mouseenter', () => cursorLabel.classList.add('is-visible'));
+    el.addEventListener('mouseleave', () => cursorLabel.classList.remove('is-visible'));
 
-closeBtn.addEventListener('click', () => {
-    segmentModal.style.display = 'none';
-});
+    segmentsContainer.appendChild(el);
+  });
 
-window.addEventListener('click', (event) => {
-    if (event.target === segmentModal) {
-        segmentModal.style.display = 'none';
-    }
-});
-
-// ============================================
-// CREAR SEGMENTO
-// ============================================
-
-createSegmentBtn.addEventListener('click', () => {
-    const title = document.getElementById('segmentTitle').value;
-    const imageInput = document.getElementById('segmentImage');
-    const soundInput = document.getElementById('segmentSound');
-    const glitchType = document.getElementById('glitchType').value;
-
-    if (!title) {
-        alert('Por favor, ingresa un título para el segmento');
-        return;
-    }
-
-    let imageData = null;
-    let soundData = null;
-
-    // Procesar imagen
-    if (imageInput.files.length > 0) {
-        const file = imageInput.files[0];
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            imageData = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-
-    // Procesar sonido
-    if (soundInput.files.length > 0) {
-        const file = soundInput.files[0];
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            soundData = e.target.result;
-            
-            // Crear segmento después de cargar ambos archivos
-            setTimeout(() => {
-                addSegment(title, imageData, soundData, glitchType);
-                segmentModal.style.display = 'none';
-                limpiarFormulario();
-            }, 100);
-        };
-        reader.readAsDataURL(file);
-    } else {
-        // Crear segmento solo con imagen o sin archivos
-        addSegment(title, imageData, soundData, glitchType);
-        segmentModal.style.display = 'none';
-        limpiarFormulario();
-    }
-
-    playGlitchSound();
-});
-
-// ============================================
-// AGREGAR SEGMENTO A LA PÁGINA
-// ============================================
-
-function addSegment(title, imageData, soundData, glitchType) {
-    const segment = {
-        id: Date.now(),
-        title,
-        imageData,
-        soundData,
-        glitchType
-    };
-
-    segments.push(segment);
-    localStorage.setItem('segments', JSON.stringify(segments));
-    renderSegments();
+  observeReveals();
 }
 
-// ============================================
-// RENDERIZAR SEGMENTOS
-// ============================================
+// ----------------------------------------------------------
+// LIGHTBOX — vista ampliada con navegación
+// ----------------------------------------------------------
 
-function renderSegments() {
-    segmentsContainer.innerHTML = '';
+const lightbox        = document.getElementById('lightbox');
+const lightboxImage    = document.getElementById('lightboxImage');
+const lightboxCaption  = document.getElementById('lightboxCaption');
+const lightboxClose    = document.getElementById('lightboxClose');
+const lightboxPrev     = document.getElementById('lightboxPrev');
+const lightboxNext     = document.getElementById('lightboxNext');
 
-    segments.forEach(segment => {
-        const segmentDiv = document.createElement('div');
-        segmentDiv.className = `segment ${segment.glitchType}`;
-        segmentDiv.innerHTML = `
-            <button class="segment-delete" onclick="deleteSegment(${segment.id})">✕</button>
-            <div class="segment-title">${segment.title}</div>
-            ${segment.imageData ? `<img src="${segment.imageData}" alt="${segment.title}" class="segment-image">` : '<div style="height: 250px; background: rgba(221,0,0,0.1); border: 2px dashed #00ff00; display: flex; align-items: center; justify-content: center; color: #FFD700;"><p>Sin imagen</p></div>'}
-            <button class="segment-button" onclick="playSegmentSound(${segment.id})">▶ REPRODUCIR SONIDO</button>
-        `;
+let currentIndex = 0;
 
-        segmentDiv.addEventListener('click', (e) => {
-            if (!e.target.closest('.segment-button') && !e.target.closest('.segment-delete')) {
-                playSegmentSound(segment.id);
-            }
-        });
-
-        segmentsContainer.appendChild(segmentDiv);
-    });
+function openLightbox(index) {
+  currentIndex = index;
+  updateLightbox();
+  lightbox.classList.add('is-open');
+  lightbox.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
 }
 
-// ============================================
-// ELIMINAR SEGMENTO
-// ============================================
-
-function deleteSegment(id) {
-    segments = segments.filter(s => s.id !== id);
-    localStorage.setItem('segments', JSON.stringify(segments));
-    renderSegments();
-    playGlitchSound();
+function closeLightbox() {
+  lightbox.classList.remove('is-open');
+  lightbox.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
 }
 
-// ============================================
-// REPRODUCIR SONIDO DEL SEGMENTO
-// ============================================
-
-function playSegmentSound(id) {
-    const segment = segments.find(s => s.id === id);
-    
-    if (segment.soundData) {
-        const audio = new Audio(segment.soundData);
-        audio.volume = 0.7;
-        audio.play().catch(err => console.log('Error al reproducir sonido:', err));
-    }
-
-    playGlitchSound();
+function updateLightbox() {
+  const item = GALLERY[currentIndex];
+  const num = String(currentIndex + 1).padStart(3, '0');
+  lightboxImage.src = `${IMAGES_PATH}${item.file}`;
+  lightboxImage.alt = item.title;
+  lightboxCaption.textContent = `N° ${num} — ${item.title}`;
 }
 
-// ============================================
-// SONIDO DE GLITCH (Efecto general)
-// ============================================
-
-function playGlitchSound() {
-    // Crear un sonido generado con Web Audio API
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const now = audioContext.currentTime;
-    
-    // Oscilador para crear el efecto glitch
-    const osc = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    
-    osc.connect(gain);
-    gain.connect(audioContext.destination);
-    
-    // Frecuencia aleatoria para el efecto
-    osc.frequency.setValueAtTime(Math.random() * 1000 + 500, now);
-    osc.frequency.exponentialRampToValueAtTime(Math.random() * 100 + 50, now + 0.1);
-    
-    gain.gain.setValueAtTime(0.3, now);
-    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-    
-    osc.start(now);
-    osc.stop(now + 0.1);
+function showNext() {
+  currentIndex = (currentIndex + 1) % GALLERY.length;
+  updateLightbox();
 }
 
-// ============================================
-// LIMPIAR FORMULARIO
-// ============================================
-
-function limpiarFormulario() {
-    document.getElementById('segmentTitle').value = '';
-    document.getElementById('segmentImage').value = '';
-    document.getElementById('segmentSound').value = '';
-    document.getElementById('glitchType').value = 'glitch-1';
+function showPrev() {
+  currentIndex = (currentIndex - 1 + GALLERY.length) % GALLERY.length;
+  updateLightbox();
 }
 
-// ============================================
+lightboxClose.addEventListener('click', closeLightbox);
+lightboxNext.addEventListener('click', showNext);
+lightboxPrev.addEventListener('click', showPrev);
+
+lightbox.addEventListener('click', (e) => {
+  if (e.target === lightbox) closeLightbox();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (!lightbox.classList.contains('is-open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowRight') showNext();
+  if (e.key === 'ArrowLeft') showPrev();
+});
+
+// ----------------------------------------------------------
+// CURSOR PERSONALIZADO — solo sobre la galería
+// ----------------------------------------------------------
+
+const cursorLabel = document.getElementById('cursorLabel');
+
+document.addEventListener('mousemove', (e) => {
+  cursorLabel.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+});
+
+// ----------------------------------------------------------
+// NAV — fondo sólido al hacer scroll
+// ----------------------------------------------------------
+
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('is-scrolled', window.scrollY > 40);
+}, { passive: true });
+
+// ----------------------------------------------------------
+// REVELADO AL HACER SCROLL
+// ----------------------------------------------------------
+
+let revealObserver;
+
+function observeReveals() {
+  if (!revealObserver) {
+    revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+  }
+  document.querySelectorAll('.reveal:not(.is-visible)').forEach((el) => {
+    revealObserver.observe(el);
+  });
+}
+
+// ----------------------------------------------------------
 // INICIALIZAR
-// ============================================
+// ----------------------------------------------------------
+
+document.getElementById('year').textContent = new Date().getFullYear();
 
 document.addEventListener('DOMContentLoaded', () => {
-    renderSegments();
-    
-    // Reproducir música automáticamente (algunos navegadores no lo permiten)
-    backgroundMusic.volume = 0.3;
-    
-    // Intentar reproducir automáticamente (puede ser bloqueado)
-    backgroundMusic.play().catch(err => {
-        console.log('Reproducción automática bloqueada. El usuario debe hacer clic.');
-    });
-});
-
-// ============================================
-// EFECTOS DE SONIDO CON GLITCH
-// ============================================
-
-document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('btn-rockstar')) {
-        playGlitchSound();
-    }
+  renderGallery();
+  observeReveals();
 });
