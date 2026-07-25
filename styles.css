@@ -41,6 +41,65 @@ a { color: inherit; text-decoration: none; }
 ::selection { background: var(--white); color: var(--black); }
 
 /* ==========================================================
+   INTRO / LOADER
+   ========================================================== */
+
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  background: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.7s var(--ease), visibility 0.7s var(--ease);
+}
+
+.intro__mark {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  color: var(--white);
+  opacity: 0;
+  transform: scale(0.85);
+  animation: intro-pop 1s var(--ease) forwards;
+}
+
+@keyframes intro-pop {
+  0%   { opacity: 0; transform: scale(0.85); letter-spacing: -0.05em; }
+  60%  { opacity: 1; transform: scale(1.04); }
+  100% { opacity: 1; transform: scale(1); letter-spacing: 0; }
+}
+
+.intro.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ==========================================================
+   BARRA DE PROGRESO DE SCROLL
+   ========================================================== */
+
+.progress {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  z-index: 700;
+  background: transparent;
+}
+
+.progress span {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: var(--white);
+  transform-origin: left;
+  transition: width 0.08s linear;
+  box-shadow: 0 0 8px rgba(255,255,255,0.5);
+}
+
+/* ==========================================================
    GRANO DE PELÍCULA — capa global sutil
    ========================================================== */
 
@@ -76,12 +135,20 @@ a { color: inherit; text-decoration: none; }
   color: var(--white);
   background: rgba(6,6,6,0.4);
   opacity: 0;
-  transform: translate(-100px, -100px) scale(0.6);
-  transition: opacity 0.25s var(--ease), scale 0.25s var(--ease);
+  transform: translate3d(-100px, -100px, 0) scale(0.5);
+  transition: opacity 0.25s var(--ease), transform 0.05s linear;
   will-change: transform;
 }
 
-.cursor-label.is-visible { opacity: 1; scale: 1; }
+.cursor-label.is-visible { opacity: 1; }
+.cursor-label.is-visible span { transform: scale(1); }
+.cursor-label span { display: inline-block; transition: transform 0.25s var(--ease); }
+
+.cursor-label.is-close {
+  background: var(--white);
+  border-color: var(--white);
+}
+.cursor-label.is-close span { color: var(--black); }
 
 @media (hover: none) {
   .cursor-label { display: none; }
@@ -124,8 +191,21 @@ a { color: inherit; text-decoration: none; }
   gap: clamp(16px, 3vw, 36px);
 }
 
-.nav__links a { color: var(--gray-1); transition: color 0.25s var(--ease); }
-.nav__links a:hover { color: var(--white); }
+.nav__link { position: relative; color: var(--gray-1); transition: color 0.3s var(--ease); }
+.nav__link span { position: relative; display: inline-block; }
+.nav__link span::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 100%;
+  bottom: -4px;
+  height: 1px;
+  background: var(--white);
+  transition: right 0.35s var(--ease);
+}
+.nav__link:hover { color: var(--white); }
+.nav__link:hover span::after { right: 0; }
+
+.nav__mark { transition: transform 0.2s var(--ease); }
 
 /* ==========================================================
    HERO
@@ -166,6 +246,18 @@ a { color: inherit; text-decoration: none; }
   margin-bottom: 28px;
 }
 
+.reveal-word {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: word-in 0.9s var(--ease) forwards;
+}
+.hero__eyebrow.reveal-word { animation-delay: 0.9s; }
+.hero__tagline.reveal-word { animation-delay: 1.5s; }
+
+@keyframes word-in {
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .hero__mark {
   font-family: var(--font-display);
   font-style: italic;
@@ -175,6 +267,17 @@ a { color: inherit; text-decoration: none; }
   color: var(--white);
   position: relative;
   cursor: default;
+  overflow: hidden;
+}
+
+.hero__mark-inner {
+  display: inline-block;
+  transform: translateY(115%);
+  animation: rise-in 1s var(--ease) 0.35s forwards;
+}
+
+@keyframes rise-in {
+  to { transform: translateY(0); }
 }
 
 .hero__mark::before,
@@ -346,6 +449,13 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  transform: perspective(900px) rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg)) scale(var(--s, 1));
+  transition: transform 0.4s var(--ease);
+  will-change: transform;
+}
+
+@media (hover: none) {
+  .segment { transform: none !important; }
 }
 
 .segment__num {
@@ -443,16 +553,19 @@ a { color: inherit; text-decoration: none; }
   position: fixed;
   inset: 0;
   z-index: 400;
-  background: rgba(4,4,4,0.96);
-  backdrop-filter: blur(6px);
+  background: rgba(4,4,4,0);
+  backdrop-filter: blur(0px);
   align-items: center;
   justify-content: center;
   padding: 60px 20px;
+  transition: background 0.4s var(--ease), backdrop-filter 0.4s var(--ease);
 }
 
-.lightbox.is-open { display: flex; animation: fadeIn 0.25s var(--ease); }
-
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.lightbox.is-open {
+  display: flex;
+  background: rgba(4,4,4,0.96);
+  backdrop-filter: blur(6px);
+}
 
 .lightbox__figure {
   max-width: min(1000px, 90vw);
@@ -468,13 +581,41 @@ a { color: inherit; text-decoration: none; }
   max-height: 74vh;
   object-fit: contain;
   filter: grayscale(1) contrast(1.15);
-  animation: rise 0.3s var(--ease);
+  transform: scale(0.82) translateY(16px);
+  opacity: 0;
+  transition: transform 0.45s var(--ease), opacity 0.4s var(--ease), filter 0.4s var(--ease);
 }
 
-@keyframes rise {
-  from { transform: translateY(12px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
+.lightbox.is-open .lightbox__figure img {
+  transform: scale(1) translateY(0);
+  opacity: 1;
 }
+
+.lightbox__figure img.is-swapping {
+  transform: scale(0.94) translateY(6px);
+  opacity: 0;
+}
+
+.lightbox__figure figcaption {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.4s var(--ease) 0.1s, transform 0.4s var(--ease) 0.1s;
+}
+
+.lightbox.is-open .lightbox__figure figcaption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.lightbox__close,
+.lightbox__nav {
+  opacity: 0;
+  transform: translateY(-50%) scale(0.85);
+  transition: opacity 0.35s var(--ease) 0.15s, transform 0.35s var(--ease) 0.15s, background 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+.lightbox__close { transform: scale(0.85); }
+.lightbox.is-open .lightbox__close { opacity: 1; transform: scale(1); }
+.lightbox.is-open .lightbox__nav { opacity: 1; transform: translateY(-50%) scale(1); }
 
 .lightbox__figure figcaption {
   font-family: var(--font-mono);
@@ -554,8 +695,12 @@ a { color: inherit; text-decoration: none; }
 }
 
 .footer__links { display: flex; gap: 26px; font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.05em; }
-.footer__links a { color: var(--gray-1); transition: color 0.25s var(--ease); }
+.footer__links a { display: inline-block; color: var(--gray-1); transition: color 0.25s var(--ease), transform 0.25s var(--ease); }
 .footer__links a:hover { color: var(--white); }
+
+.segment__image.is-placeholder {
+  filter: grayscale(1) contrast(1.05) brightness(0.85);
+}
 
 .footer__legal {
   font-family: var(--font-mono);
