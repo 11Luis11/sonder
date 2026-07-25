@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLITCH REALM - Rockstar Aesthetic</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- AUDIO DE FONDO -->
+    <audio id="backgroundMusic" loop volume="0.3">
+        <source src="assets/music/background.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="container">
+        <!-- HEADER CON GLITCH -->
+        <header class="glitch-header">
+            <div class="glitch-text" data-text="GLITCH REALM">GLITCH REALM</div>
+            <p class="subtitle-glitch">Experiencia de Audio Visual</p>
+        </header>
+
+        <!-- CONTROLES DE MÚSICA -->
+        <div class="music-controls">
+            <button id="playBtn" class="btn-rockstar active">▶ REPRODUCIR</button>
+            <button id="pauseBtn" class="btn-rockstar">⏸ PAUSA</button>
+            <div class="volume-control">
+                <label for="volumeSlider">VOLUMEN:</label>
+                <input type="range" id="volumeSlider" min="0" max="100" value="30">
+            </div>
+        </div>
+
+        <!-- CONTENEDOR DE SEGMENTOS -->
+        <main class="segments-container" id="segmentsContainer">
+            <!-- Los segmentos se agregarán aquí dinámicamente -->
+        </main>
+
+        <!-- BOTÓN PARA AGREGAR SEGMENTOS -->
+        <div class="add-segment-section">
+            <button id="addSegmentBtn" class="btn-rockstar btn-large">+ AGREGAR SEGMENTO</button>
+        </div>
+
+        <!-- MODAL PARA AGREGAR SEGMENTO -->
+        <div id="segmentModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>CREAR NUEVO SEGMENTO</h2>
+                
+                <div class="form-group">
+                    <label for="segmentTitle">Título del Segmento:</label>
+                    <input type="text" id="segmentTitle" placeholder="Ej: Falla Digital" class="input-rockstar">
+                </div>
+
+                <div class="form-group">
+                    <label for="segmentImage">Imagen (Nombra así: segment_001.png):</label>
+                    <input type="file" id="segmentImage" accept="image/*" class="input-rockstar">
+                    <small>📌 Nombres: segment_001.png, segment_002.png, segment_003.png...</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="segmentSound">Sonido de Efecto (Nombra así: glitch_001.mp3):</label>
+                    <input type="file" id="segmentSound" accept="audio/*" class="input-rockstar">
+                    <small>📌 Nombres: glitch_001.mp3, glitch_002.mp3, glitch_003.mp3...</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="glitchType">Tipo de Glitch:</label>
+                    <select id="glitchType" class="input-rockstar">
+                        <option value="glitch-1">Distorsión Roja</option>
+                        <option value="glitch-2">Scan Lines</option>
+                        <option value="glitch-3">Dispersión Caótica</option>
+                        <option value="glitch-4">Deformación Digital</option>
+                    </select>
+                </div>
+
+                <button id="createSegmentBtn" class="btn-rockstar btn-large">CREAR SEGMENTO</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

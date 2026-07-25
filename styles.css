@@ -1,0 +1,550 @@
+/* ============================================
+   GLITCH REALM - ROCKSTAR AESTHETIC
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --color-red: #DD0000;
+    --color-red-dark: #990000;
+    --color-black: #0a0a0a;
+    --color-white: #ffffff;
+    --color-yellow: #FFD700;
+    --color-gray: #1a1a1a;
+    --color-glitch: #00ff00;
+}
+
+body {
+    background-color: var(--color-black);
+    color: var(--color-white);
+    font-family: 'Arial', sans-serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* ============================================
+   CONTENEDOR PRINCIPAL
+   ============================================ */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* ============================================
+   HEADER CON GLITCH
+   ============================================ */
+
+.glitch-header {
+    text-align: center;
+    margin: 60px 0;
+    position: relative;
+}
+
+.glitch-text {
+    font-size: 4rem;
+    font-weight: 900;
+    letter-spacing: 8px;
+    color: var(--color-red);
+    text-transform: uppercase;
+    position: relative;
+    text-shadow: 
+        3px 0 var(--color-glitch),
+        -3px 0 var(--color-yellow);
+    animation: glitch-anim 0.3s infinite;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;;
+    opacity: 0.8;
+}
+
+.glitch-text::before {
+    animation: glitch-anim-1 0.3s infinite;
+    color: var(--color-glitch);
+    z-index: -1;
+}
+
+.glitch-text::after {
+    animation: glitch-anim-2 0.3s infinite;
+    color: var(--color-yellow);
+    z-index: -2;
+}
+
+@keyframes glitch-anim-1 {
+    0% {
+        clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+        transform: translate(-2px, -2px);
+    }
+    100% {
+        clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+        transform: translate(2px, 2px);
+    }
+}
+
+@keyframes glitch-anim-2 {
+    0% {
+        clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+        transform: translate(2px, 2px);
+    }
+    100% {
+        clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+        transform: translate(-2px, -2px);
+    }
+}
+
+@keyframes glitch-anim {
+    0% {
+        transform: translate(0);
+    }
+    20% {
+        transform: translate(-2px, 2px);
+    }
+    40% {
+        transform: translate(-2px, -2px);
+    }
+    60% {
+        transform: translate(2px, 2px);
+    }
+    80% {
+        transform: translate(2px, -2px);
+    }
+    100% {
+        transform: translate(0);
+    }
+}
+
+.subtitle-glitch {
+    font-size: 1.2rem;
+    color: var(--color-yellow);
+    margin-top: 20px;
+    letter-spacing: 2px;
+    animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+    0%, 100% { 
+        text-shadow: 0 0 5px var(--color-yellow);
+        opacity: 1;
+    }
+    50% { 
+        text-shadow: 0 0 20px var(--color-red);
+        opacity: 0.8;
+    }
+}
+
+/* ============================================
+   CONTROLES DE MÚSICA
+   ============================================ */
+
+.music-controls {
+    background: linear-gradient(135deg, var(--color-gray) 0%, var(--color-black) 100%);
+    border: 3px solid var(--color-red);
+    border-radius: 0;
+    padding: 20px;
+    margin: 40px 0;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+    box-shadow: 0 0 20px rgba(221, 0, 0, 0.5);
+}
+
+/* ============================================
+   BOTONES ROCKSTAR
+   ============================================ */
+
+.btn-rockstar {
+    background: var(--color-red);
+    color: var(--color-black);
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-rockstar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--color-yellow);
+    transition: left 0.3s;
+    z-index: -1;
+}
+
+.btn-rockstar:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 0 8px 20px rgba(221, 0, 0, 0.7);
+    color: var(--color-white);
+}
+
+.btn-rockstar:active {
+    transform: translate(0, 0);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+.btn-rockstar.active {
+    background: var(--color-yellow);
+    color: var(--color-black);
+    box-shadow: 0 0 15px var(--color-yellow);
+}
+
+.btn-large {
+    padding: 20px 40px;
+    font-size: 1.2rem;
+}
+
+/* ============================================
+   CONTROLES DE VOLUMEN
+   ============================================ */
+
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+    min-width: 200px;
+}
+
+.volume-control label {
+    color: var(--color-yellow);
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+#volumeSlider {
+    width: 150px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    border-radius: 5px;
+    background: var(--color-red);
+    outline: none;
+}
+
+#volumeSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-yellow);
+    cursor: pointer;
+    box-shadow: 0 0 10px var(--color-yellow);
+}
+
+#volumeSlider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-yellow);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 10px var(--color-yellow);
+}
+
+/* ============================================
+   CONTENEDOR DE SEGMENTOS
+   ============================================ */
+
+.segments-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+    margin: 60px 0;
+}
+
+.segment {
+    background: linear-gradient(135deg, var(--color-gray) 0%, var(--color-black) 100%);
+    border: 3px solid var(--color-red);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.segment:hover {
+    transform: translate(-5px, -5px);
+    box-shadow: 0 10px 30px rgba(221, 0, 0, 0.6);
+    border-color: var(--color-yellow);
+}
+
+.segment.glitch-1 {
+    animation: glitch-distort 0.4s infinite;
+}
+
+.segment.glitch-2 {
+    animation: scan-lines 0.5s infinite linear;
+}
+
+.segment.glitch-3 {
+    animation: chaos-glitch 0.3s infinite;
+}
+
+.segment.glitch-4 {
+    animation: wave-distort 0.6s infinite;
+}
+
+@keyframes glitch-distort {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-3px, -3px); }
+    40% { transform: translate(3px, 3px); }
+    60% { transform: translate(-3px, 3px); }
+    80% { transform: translate(3px, -3px); }
+}
+
+@keyframes scan-lines {
+    0% { text-shadow: 0 0 10px rgba(221, 0, 0, 0.5); }
+    50% { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+    100% { text-shadow: 0 0 10px rgba(221, 0, 0, 0.5); }
+}
+
+@keyframes chaos-glitch {
+    0%, 100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+    25% { clip-path: polygon(20% 0, 100% 0, 90% 100%, 0 100%); }
+    50% { clip-path: polygon(0 30%, 100% 20%, 100% 80%, 0 90%); }
+    75% { clip-path: polygon(10% 0, 100% 10%, 80% 100%, 0 90%); }
+}
+
+@keyframes wave-distort {
+    0%, 100% { transform: skewX(0deg); }
+    25% { transform: skewX(-2deg); }
+    50% { transform: skewX(2deg); }
+    75% { transform: skewX(-2deg); }
+}
+
+.segment-title {
+    font-size: 1.5rem;
+    color: var(--color-yellow);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px var(--color-red);
+}
+
+.segment-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    margin: 15px 0;
+    border: 2px dashed var(--color-glitch);
+    background: rgba(0, 255, 0, 0.1);
+    filter: contrast(1.1) brightness(1.05);
+    transition: all 0.3s;
+}
+
+.segment:hover .segment-image {
+    filter: contrast(1.2) brightness(1.15) hue-rotate(10deg);
+}
+
+.segment-button {
+    width: 100%;
+    padding: 15px;
+    background: var(--color-red);
+    color: var(--color-black);
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    margin-top: 15px;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+}
+
+.segment-button:hover {
+    background: var(--color-yellow);
+    box-shadow: 0 0 15px var(--color-yellow);
+}
+
+.segment-delete {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--color-red-dark);
+    color: var(--color-white);
+    border: none;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.segment-delete:hover {
+    background: var(--color-red);
+    transform: scale(1.2);
+}
+
+/* ============================================
+   SECCIÓN AGREGAR SEGMENTO
+   ============================================ */
+
+.add-segment-section {
+    text-align: center;
+    margin: 60px 0;
+}
+
+/* ============================================
+   MODAL
+   ============================================ */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: linear-gradient(135deg, var(--color-gray) 0%, var(--color-black) 100%);
+    border: 3px solid var(--color-red);
+    margin: 5% auto;
+    padding: 30px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 0 30px rgba(221, 0, 0, 0.7);
+    animation: slideDown 0.3s;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.close {
+    color: var(--color-red);
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.close:hover {
+    color: var(--color-yellow);
+    transform: scale(1.2);
+}
+
+.modal h2 {
+    color: var(--color-yellow);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px var(--color-red);
+}
+
+/* ============================================
+   FORMULARIO
+   ============================================ */
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    color: var(--color-yellow);
+    font-weight: bold;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.input-rockstar {
+    width: 100%;
+    padding: 12px;
+    background: var(--color-black);
+    border: 2px solid var(--color-red);
+    color: var(--color-white);
+    font-size: 1rem;
+    transition: all 0.3s;
+    font-family: Arial, sans-serif;
+}
+
+.input-rockstar:focus {
+    outline: none;
+    border-color: var(--color-yellow);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    background: rgba(255, 215, 0, 0.05);
+}
+
+.form-group small {
+    display: block;
+    color: var(--color-glitch);
+    margin-top: 5px;
+    font-size: 0.85rem;
+}
+
+#createSegmentBtn {
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .glitch-text {
+        font-size: 2.5rem;
+        letter-spacing: 4px;
+    }
+
+    .segments-container {
+        grid-template-columns: 1fr;
+    }
+
+    .music-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .volume-control {
+        flex-direction: column;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+    }
+}
